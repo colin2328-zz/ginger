@@ -11,21 +11,17 @@ def next_weekday(weekday_int):
 	return today + datetime.timedelta(days_ahead)
 
 def process_vendors(text):
-	# Assuming vendors text starts with vendors
-	result = re.findall('Vendors:[\r\n\w+ \']*\r\n\r\n', text)
-	print result
+	# Assuming text starts and ends with the following strings
+	start_string = 'Vendors:'
+	end_string = '\r\n\r\n'
+	result = re.findall( start_string + '[\r\n\w+ \']*' + end_string, text)
 	if result:
 		split = result[0].split('\r\n')
-		return split[1:-3]
+		return split[1:-3] #remove start string and end strings
 
 token = 'CAACEdEose0cBAHrRy2storpmKC56lKnAafEtGxvdS4HZArZAzOTHUrtZBqfC5ZBMp9KEpTYzBqT6pVfnR6upK6OgfdjP3ZCj5TQP6dL2v5igwQQ7O4kuZCfyyv4NBHLjIXPuM78XV0ZBAZCxW6kHbCmi9IFbbH7ig2EiOiRRUunZBIXTZCzp0bqQcVfgA9CNb7WYQRBZA4reSxMgAZDZD'
 address = '410 Minna St'
 event_name = "OffTheGridSF"
-
-
-# text = """Every Wednesday and Friday, this market is perfect for lunch! Nestled in the Minna St. tunnel (at 5th St.), this location is great for escaping the fog or rain. Check out live music every Friday.\r\n\r\nLocation: 5th St. @ Minna St.\r\nTime: 11:00am-2:00pm\r\n\r\n \ 
-# Vendors:\r\nFins on the Hoof\r\nPhat Thai\r\nTandoori Chicken USA\r\nVoodoo Van\r\nTres Truck\r\n\r\n\r\nCATERING NEEDS? Have OtG cater your next event! Get started by visiting offthegridsf.com/catering."""
-
 
 next_wed = str(next_weekday(2)) 
 next_fri = str(next_weekday(4))
@@ -38,19 +34,16 @@ for event in off_grid_events['data']:
 		target_event_ids.append( event['id'])
 
 
-events = graph.get_objects(cat='multiple', ids=target_event_ids, fields=['description'])
-#todo: assert event location is on Minna
+events = graph.get_objects(cat='multiple', ids=target_event_ids, fields=['description', 'start_time', 'location'])
 for id_no in events:
-	print id_no
 	event = events[id_no]
+	#assert that location and time really does match
+	assert(re.search(address, event['location']))
+	if re.search(next_wed, event['start_time']):
+		print 'Wednesday truck'
+	elif re.search(next_fri, event['start_time']):
+		print 'Friday truck'
 	lst = process_vendors( event['description'])
 	print lst
-
-# profile = graph.get_object("me")
-# friends = graph.get_connections("me", "friends")
-
-# friend_list = [friend['name'] for friend in friends['data']]
-
-# print friend_list
 
 
