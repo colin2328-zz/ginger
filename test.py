@@ -11,11 +11,14 @@ def next_weekday(weekday_int):
 	return today + datetime.timedelta(days_ahead)
 
 def process_vendors(text):
-	result = re.findall('Vendors:[\r\n\w+ \']*CATERING NEEDS', text)
+	# Assuming vendors text starts with vendors
+	result = re.findall('Vendors:[\r\n\w+ \']*\r\n\r\n', text)
+	print result
 	if result:
-		return result[0].split('\r\n')
+		split = result[0].split('\r\n')
+		return split[1:-3]
 
-token = 'CAACEdEose0cBAIr1ucXZBqD1GNFdJ3B0ZBI8T6KunVmhhHaxZBJ2pFMDaAe4rAvdOb1hcrvOfNwhIZA2xMsrNXIXOLOWtGsi6iGGoTZC7DSBxQ4t9qaEHVZAUZBFzyAfdMrCxbJB0JmGmitQgyFBNqqptc8w7ldLZC1ZATvRCAzj0GPhgudUZAPfjdRh0ZAjo4t9FtF68m9kj7NtgZDZD'
+token = 'CAACEdEose0cBAHrRy2storpmKC56lKnAafEtGxvdS4HZArZAzOTHUrtZBqfC5ZBMp9KEpTYzBqT6pVfnR6upK6OgfdjP3ZCj5TQP6dL2v5igwQQ7O4kuZCfyyv4NBHLjIXPuM78XV0ZBAZCxW6kHbCmi9IFbbH7ig2EiOiRRUunZBIXTZCzp0bqQcVfgA9CNb7WYQRBZA4reSxMgAZDZD'
 address = '410 Minna St'
 event_name = "OffTheGridSF"
 
@@ -38,6 +41,7 @@ for event in off_grid_events['data']:
 events = graph.get_objects(cat='multiple', ids=target_event_ids, fields=['description'])
 #todo: assert event location is on Minna
 for id_no in events:
+	print id_no
 	event = events[id_no]
 	lst = process_vendors( event['description'])
 	print lst
