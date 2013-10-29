@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>Food Truck Analytics <small>Colin Taylor</small></h1>
+</div>
+
+<ul class="list-group">
+	{% for food_truck in food_trucks %}
+	<li class="list-group-item"> {{food_truck}} </li>
+	{% endfor %}
+</ul>
+
+{% endblock %}
