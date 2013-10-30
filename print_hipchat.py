@@ -36,11 +36,13 @@ def next_weekday(weekday_int):
 
 def process_vendors(text):
     # Assuming text starts and ends with the following strings
-    start_string = 'Vendors:'
-    end_string = '\r\n\r\n'
-    result = re.findall( start_string + '[\r\n\w+ \']*' + end_string, text)
+    text = text.replace('\r', '')
+    start_string = r'Vendors:'
+    end_string = r'\n\n'
+    regex_string = start_string + r"[\n\w ']*" + end_string
+    result = re.findall( regex_string , text)
     if result:
-        split = result[0].split('\r\n')
+        split = result[0].split('\n')
         return split[1:-3] #remove start string and end strings
 
 address = '410 Minna St'
@@ -74,8 +76,10 @@ for id_no in events:
     elif re.search(next_fri, event['start_time']):
         rtn_str += "Friday\'s trucks: "
     lst = process_vendors( event['description'])
-    rtn_str += ', '.join(lst)
-    hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
+    if lst:
+        rtn_str += ', '.join(lst)
+    # hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
+    print rtn_str
 
 
 
