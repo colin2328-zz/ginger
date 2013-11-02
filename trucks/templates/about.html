@@ -1,9 +1,17 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block content %}
 <p> Navigating the food truck scene can be daunting and exhilarating, depending on how much time you you that day. 
 For this project I set out to organize the food trucks according to their frequency of appearance based on Facebook data. </p>
-<p> I used the following tools to agregate data. </p>
+<p> I used the following tools to agregate data:  Twitter Bootstrap,
+Django, Python Facebook sdk, Heroku </p> 
+
+
+<hr> </hr>
+<img src="{% static 'images/food_truck.jpg' %}" alt="Food Truck" class="img-circle pagination-centered"/>
+
+
 
 
 {% endblock %}
