@@ -43,7 +43,7 @@ def calc_avg_word_count(lines):
 		total_word_count += word_count
 	return float(total_word_count) /  float(len(lines) -1)
 
-def get_vendors_list(text, id_no):
+def get_vendors_list(text):
 	date_time_regex = re.compile(ur'\d{1,2}th|1st|2nd|3rd|\d{1,2}:?\d{0,2}[AP]M|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday')
 
 	text = text.replace('\r', '')
@@ -123,13 +123,14 @@ def get_last_30_vendors():
 		for id_no in events:
 			event = events[id_no]
 			try:
-				lst = get_vendors_list( event['description'], id_no)
-			except Exception:
-				pass
-			if lst:
-				rtn_str = id_no, "Today's trucks: " + ', '.join(lst)
-				add_vendors_to_dict(lst, vendors_dict)
-	except (facebook.GraphAPIError, Exception):
+				lst = get_vendors_list( event['description'])
+				if lst:
+					rtn_str = id_no, "Today's trucks: " + ', '.join(lst)
+					add_vendors_to_dict(lst, vendors_dict)
+			except Exception as e:
+				print e
+	except (facebook.GraphAPIError, Exception) as e:
+		print 'error', e
 		pass
 	finally:
 		return vendors_dict

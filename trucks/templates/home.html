@@ -2,14 +2,31 @@
 
 {% block content %}
 
-<div class="page-header">
-  <h1>Food Truck Analytics <small>Colin Taylor</small></h1>
-</div>
 
-<ul class="list-group">
-	{% for food_truck in food_trucks %}
-	<li class="list-group-item"> {{food_truck.0}} {{food_truck.1}}</li>
-	{% endfor %}
-</ul>
+
+<div class="row">
+	<div class="col-md-6 col-md-offset-3">
+		<div>
+		  <table class="table table-hover">
+			<thead>
+			  <tr>
+			  	<th>Rank</th>
+				<th>Food Truck Name</th>
+				<th>Number of Appearances</th>
+			  </tr>
+			</thead>
+			<tbody>
+			{% for food_truck in food_trucks %}
+			  <tr>
+			  	<td>#{{forloop.counter}}</td>
+				<td>{{food_truck.0}}</td>
+				<td>{{food_truck.1}}</td>
+			  </tr>
+			{% endfor %}
+			</tbody>
+		  </table>
+		</div>
+	</div>
+</div>
 
 {% endblock %}
