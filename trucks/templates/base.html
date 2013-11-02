@@ -33,15 +33,15 @@
 		<div class="container">
 			<div class="header">
 				<ul class="nav nav-pills pull-right">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#">About</a></li>
+					<li><a href="{% url 'home' %}"> Home</a></li>
+					<li><a href="{% url 'about' %}"> About </a></li>
 				</ul>
 				<h3 class="text-muted">Food Truck Analytics</h3>
 			</div>
 
 			<div class="jumbotron">
 				<h1>  Off the Grid SF  <small> Food Trucks </small></h1>
-				<p> A list of the food trucks in <a href="https://www.facebook.com/OffTheGridSF">Off the Grid SF </a> that have appeared in the past 30 days. </p>
+				<p> The Bay's Most Sought After   <a href="https://www.facebook.com/OffTheGridSF"> Mobile Eats</a> in the last 30 days </p>
 			</div>
 
 			{% block content %}{% endblock content %}
