@@ -135,6 +135,8 @@ def get_last_30_vendors():
 	finally:
 		return vendors_dict
 
+def test():
+	print 'test'
 
 if __name__ == "__main__":
 	print get_last_30_vendors()
