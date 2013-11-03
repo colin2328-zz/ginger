@@ -1,2 +1,2 @@
 web: gunicorn trucks.wsgi
-clock: python cron_job.py
+clock: python 'import os; print os.getcwd()'
