@@ -1,2 +1,2 @@
 web: gunicorn trucks.wsgi
-clock: python clock.py
+clock: python cron_job.py
