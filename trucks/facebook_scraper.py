@@ -140,5 +140,5 @@ def test():
 
 if __name__ == "__main__":
 	print get_last_30_vendors()
-	post_todays_minna_vendors()
+	# post_todays_minna_vendors()
 
