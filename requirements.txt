@@ -7,6 +7,8 @@ django-toolbelt==0.0.1
 facebook-sdk==0.4.0
 gunicorn==18.0
 psycopg2==2.5.1
+python-dateutil==2.2
 python-simple-hipchat==0.1
+six==1.4.1
 static==0.4
 wsgiref==0.1.2
