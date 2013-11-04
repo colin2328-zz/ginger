@@ -1,8 +1,8 @@
 #coding: utf8
 import facebook
 import re
-import datetime, time
-import hipchat
+import datetime
+import dateutil.parser as dateparser
 import urllib
 import subprocess
 import urlparse
@@ -29,12 +29,6 @@ def get_fbook_token():
 		print('Unable to get access token')
 		return None
 
-def add_vendors_to_dict(vendors_list, diction):
-	for vendor in vendors_list:
-		if diction.has_key(vendor):
-			diction[vendor] += 1
-		else:
-			diction[vendor] = 1
 
 def calc_avg_word_count(lines):
 	total_word_count = 0
@@ -43,7 +37,14 @@ def calc_avg_word_count(lines):
 		total_word_count += word_count
 	return float(total_word_count) /  float(len(lines) -1)
 
-def get_vendors_list(text):
+def scrape_vendors_list(text):
+	"""
+	argument: text - a string containing the information from a vendor's page
+	return: a list of vendors in the text, or empty list
+
+	Uses a hardcoded decision tree to identify vendors. If I had more time, I would use a more sophisticated method (such as defining several metrics/heuristics
+	and using ML to classify a line as a vendor or not)
+	"""
 	date_time_regex = re.compile(ur'\d{1,2}th|1st|2nd|3rd|\d{1,2}:?\d{0,2}[AP]M|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday')
 
 	text = text.replace('\r', '')
@@ -77,68 +78,60 @@ def get_vendors_list(text):
 				lines = lines[1:]
 			rtn_list += lines
 
-	return rtn_list	
+	return rtn_list
 
-def get_todays_vendors(address):
-	try:
-		today = str(datetime.date.today())
-		graph = facebook.GraphAPI(get_fbook_token())
-		off_grid_events = graph.get_connections(event_name, 'events')
+def get_events(since, until):
+	"""
+	arguments: since and until are unix timestamps or datetime.date objects
+	return: list of event objects or empty list
 
-		for event in off_grid_events['data']:
-			if re.search(address, event['location'])  and re.search(today, event['start_time']):
-				event = graph.get_object(event['id'], fields=['description', 'start_time', 'location'])
-				break #found event with correct location and date!
-		assert(re.search(address, event['location']) and re.search(today, event['start_time']))  #assert that location and time really does match
-		return get_vendors_list(event['description'])
-	except (facebook.GraphAPIError, Exception):
-		return None
-
-
-def post_todays_minna_vendors():
-	address = '410 Minna St'
-	hipchat_token = '35b7de36961929ed984c34bbfc0d08'
-	hipchat_room_id = 320022
-	hipchat_user = 'Food Fairy'
-	hipster = hipchat.HipChat(token=hipchat_token)
-
-	lst = get_todays_vendors(address)
-	if lst: # make get_vendors_list returns something
-		rtn_str = "Today's trucks: " + ', '.join(lst)
-		print rtn_str
-		# hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
-
-def get_last_30_vendors():
-	vendors_dict = {}
+	"""
 	try:
 		graph = facebook.GraphAPI(get_fbook_token())
-		until_ts = int(time.time()) #unix timestamp of today
-		since_ts = until_ts - 60*60*24*30 #unix timestamp of 30 days ago
-		off_grid_events = graph.get_connections(event_name, 'events', since=str(since_ts), until=str(until_ts))
+		off_grid_events = graph.get_connections(event_name, 'events', since=str(since), until=str(until))
+
 		target_event_ids = []
 		for event in off_grid_events['data']:
 			target_event_ids.append( event['id'])
-		events = graph.get_objects(cat='multiple', ids=target_event_ids, fields=['description', 'start_time', 'location'])
-		
-		for id_no in events:
-			event = events[id_no]
-			try:
-				lst = get_vendors_list( event['description'])
-				if lst:
-					rtn_str = id_no, "Today's trucks: " + ', '.join(lst)
-					add_vendors_to_dict(lst, vendors_dict)
-			except Exception as e:
-				print e
+		return graph.get_objects(cat='multiple', ids=target_event_ids, fields=['description', 'start_time', 'location'])
 	except (facebook.GraphAPIError, Exception) as e:
-		print 'error', e
-		pass
-	finally:
-		return vendors_dict
+		print 'exception', e
+		return []
 
-def test():
-	print 'test'
+def scrape_todays_vendors(address):
+	"""
+	arguments: address - string
+	return: list of vendor names or empty list
+	"""
+	today = datetime.date.today()
+	tomorrow = today + datetime.timedelta(1)
+	events = get_events(today, tomorrow)
+	
+	for id_no in events:
+		event = events[id_no]
+		if re.search(address, event['location'])  and re.search(str(today), event['start_time']): #found event with correct location and date!
+
+			return scrape_vendors_list(event['description'])
+	return []
+
+def scrape_last_30_days_vendors():
+	"""
+	return: a list of (id (int), date (datetime.date), and vendors_list) tuples  or empty list
+	"""
+	today = datetime.date.today()
+	last_month = today - datetime.timedelta(30)
+	events = get_events(last_month, today)
+	
+	rtn_lst = []
+	for id_no in events:
+		event = events[id_no]
+		lst = scrape_vendors_list( event['description'])
+		if lst:
+			date = dateparser.parse(event['start_time']).date()
+			rtn_lst.append((id_no, date, lst))
+	return rtn_lst
+
 
 if __name__ == "__main__":
-	print get_last_30_vendors()
-	# post_todays_minna_vendors()
+	print scrape_last_30_days_vendors()
 

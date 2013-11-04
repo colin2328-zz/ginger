@@ -1,4 +1,4 @@
-import facebook_scraper
+import trucks.facebook_scraper as facebook_scraper
 
 def run_post_todays_minna_vendors():
     """
