@@ -1,3 +1,4 @@
+print 'entered'
 import trucks.hipchat_posting as hipchat_posting
 import trucks.event_persistance as event_persistance
 
