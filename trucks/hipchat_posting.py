@@ -16,8 +16,7 @@ def post_todays_minna_vendors():
 	lst = facebook_scraper.get_todays_vendors(address)
 	if lst: # make get_vendors_list is populated
 		rtn_str = "Today's trucks: " + ', '.join(lst)
-		print rtn_str
-		# hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
+		hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
 
 if __name__ == "__main__":
 	post_todays_minna_vendors()
