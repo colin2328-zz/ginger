@@ -6,7 +6,12 @@ def run_post_todays_minna_vendors():
     Posts todays food trucks on Minna street
     To be called by a cron job (currently done by Heroku Scheduler)
     """
-    hipchat_posting.post_todays_minna_vendors()
+    print 'started'
+    try:
+        hipchat_posting.post_todays_minna_vendors()
+    except Exception as e:
+        print e
+    print 'ended'
 
 def run_store_last_30_days_vendors():
     """
