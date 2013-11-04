@@ -8,7 +8,7 @@ def run_post_todays_minna_vendors():
     """
     hipchat_posting.post_todays_minna_vendors()
 
-def scheduled_job():
+def run_store_last_30_days_vendors():
     """
     Stores data retrieved from facebook's event pages to database
     To be called by a cron job (currently done by Heroku Scheduler)
