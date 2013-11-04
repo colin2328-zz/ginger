@@ -13,7 +13,7 @@ def post_todays_minna_vendors():
 	hipchat_user = 'Food Fairy'
 	hipster = hipchat.HipChat(token=hipchat_token)
 
-	lst = facebook_scraper.get_todays_vendors(address)
+	lst = facebook_scraper.scrape_todays_vendors(address)
 	if lst: # make get_vendors_list is populated
 		rtn_str = "Today's trucks: " + ', '.join(lst)
 		hipster.method('rooms/message', method='POST', parameters={'room_id': hipchat_room_id, 'from': hipchat_user, 'message': rtn_str})
