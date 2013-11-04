@@ -1,4 +1,5 @@
 from django.conf import settings
+settings.configure()
 import trucks.hipchat_posting as hipchat_posting
 import trucks.event_persistance as event_persistance
 
