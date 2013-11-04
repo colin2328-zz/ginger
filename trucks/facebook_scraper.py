@@ -134,4 +134,5 @@ def scrape_last_30_days_vendors():
 
 if __name__ == "__main__":
 	print scrape_last_30_days_vendors()
+	# print scrape_todays_vendors('114 Minna')
 

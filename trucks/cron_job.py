@@ -1,7 +1,7 @@
-from django.conf import settings
-settings.configure()
-import trucks.hipchat_posting as hipchat_posting
-import trucks.event_persistance as event_persistance
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'trucks.settings'
+from trucks import hipchat_posting
+from trucks import event_persistance
 
 def run_post_todays_minna_vendors():
     """
